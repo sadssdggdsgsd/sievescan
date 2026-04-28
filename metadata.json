@@ -1,0 +1,6 @@
+{
+  "name": "SieveScan AI",
+  "description": "AI-powered tool for extracting, analyzing, and calculating hydraulic conductivity from soil sieve analysis graphs (Siktanalys).",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
