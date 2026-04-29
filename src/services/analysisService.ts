@@ -1,7 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
 export interface Point {
   x: number; // Grain size (mm) - logarithmic scale
   y: number; // Percent passing (%) - 0-100
@@ -16,7 +14,22 @@ export interface CurveData {
   extrapolatedD10: boolean;
 }
 
+let aiInstance: GoogleGenAI | null = null;
+
+function getAI() {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey || apiKey === "MY_GEMINI_API_KEY" || apiKey.length < 10) {
+    throw new Error("Google Gemini API-nyckel saknas. För att använda appen på din egen domän/GitHub behöver du lägga till en GEMINI_API_KEY i Repository Secrets.");
+  }
+  
+  if (!aiInstance) {
+    aiInstance = new GoogleGenAI({ apiKey });
+  }
+  return aiInstance;
+}
+
 export async function analyzeSieveGraph(imageData: string): Promise<CurveData[]> {
+  const ai = getAI();
   const prompt = `
     Analyze this image of a sieve analysis graph (siktanalys).
     The image contains one or more curves showing soil particle size distribution.
